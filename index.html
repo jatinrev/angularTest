@@ -8,6 +8,7 @@
 <body>
 
 	<div class="container" ng-app="myModule">
+
 		<div class="row" ui-view></div>
 		
 	</div>
@@ -19,6 +20,7 @@
 	<script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
 	<script type="text/javascript">
 		var app = angular.module('myModule', ['ui.bootstrap', 'ui.router']);
+
 		app.config(function($stateProvider, $urlRouterProvider) {
 			$urlRouterProvider.otherwise('/home');
 			$stateProvider
@@ -26,14 +28,40 @@
 	        .state('home', {
 	        	url: '/home',
 	        	templateUrl: 'template/partial-home.html',
-	        	controller: function($scope) {
+	        	controller: function($scope, $uibModal, $log) {
 	        		$scope.dogs = ['Bernese', 'Husky', 'Goldendoodle'];
+	        		$scope.open = function() {
+	        			var modalInstance = $uibModal.open({
+	        				animation: true,
+	        				ariaLabelledBy: 'modal-title',
+	        				ariaDescribedBy: 'modal-body',
+	        				templateUrl: 'template/myModalContent.html',
+	        				controller: 'ModalInstanceCtrl',
+	        				controllerAs: '$ctrl',
+	        				size: '',
+	        				resolve: {
+	        					items: function () {
+	        						return ['asta', 'la', 'vista'];
+	        					}
+	        				}
+	        			});
+
+	        			modalInstance.result.then(function (selectedItem) {
+	        				$ctrl.selected = selectedItem;
+	        			}, function () {
+	        				$log.info('Modal dismissed at: ' + new Date());
+	        			});
+	        		}
 	        	}
 	        })
 	        // ABOUT PAGE AND MULTIPLE NAMED VIEWS =================================
 	        .state('about', {
 	            // we'll get to this in a bit       
 	        });
+		});
+
+		app.controller('ModalInstanceCtrl', function($uibModalInstance) {
+			
 		});
 	</script>
 </body>
